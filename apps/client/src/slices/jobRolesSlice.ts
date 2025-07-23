@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const API_URL ='http://localhost:5000';
+
 export interface JobRole {
   _id?: string;
   jobTitle: string;
@@ -49,7 +51,7 @@ export const fetchJobRoles = createAsyncThunk(
     if (search) params.search = search;
     if (department) params.department = department;
     if (sort) params.sort = sort === 'oldest' ? 'oldest' : undefined;
-    const res = await axios.get('/jobroles', { params });
+    const res = await axios.get(`${API_URL}/jobroles`, { params });
     return res.data;
   }
 );
@@ -57,7 +59,7 @@ export const fetchJobRoles = createAsyncThunk(
 export const createJobRole = createAsyncThunk(
   'jobRoles/create',
   async (data: Omit<JobRole, '_id' | 'createdAt'>) => {
-    const res = await axios.post('/jobroles', data);
+    const res = await axios.post(`${API_URL}/jobroles`, data);
     return res.data;
   }
 );
@@ -65,7 +67,7 @@ export const createJobRole = createAsyncThunk(
 export const updateJobRole = createAsyncThunk(
   'jobRoles/update',
   async ({ id, data }: { id: string; data: Omit<JobRole, '_id' | 'createdAt'> }) => {
-    const res = await axios.put(`/jobroles/${id}`, data);
+    const res = await axios.put(`${API_URL}/jobroles/${id}`, data);
     return res.data;
   }
 );
@@ -73,7 +75,7 @@ export const updateJobRole = createAsyncThunk(
 export const deleteJobRole = createAsyncThunk(
   'jobRoles/delete',
   async (id: string) => {
-    await axios.delete(`/jobroles/${id}`);
+    await axios.delete(`${API_URL}/jobroles/${id}`);
     return id;
   }
 );
