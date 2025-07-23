@@ -20,5 +20,10 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@types/mongoose": "^5.11.96",
+    "dotenv": "^17.2.0",
+    "mongoose": "^8.16.4"
+  }
 }
