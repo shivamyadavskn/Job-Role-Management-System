@@ -5,8 +5,6 @@ import logger from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import indexRouter from "./routes/index";
-import usersRouter from "./routes/users";
 import jobRolesRouter from "./routes/jobroles";
 
 const app: Application = express();
@@ -14,7 +12,6 @@ const app: Application = express();
 dotenv.config();
 
 const mongoURI = process.env.MONGODB_URI || "";
-console.log("mongoURI", mongoURI);
 mongoose
   .connect(mongoURI)
   .then(() => console.log("MongoDB connected"))
@@ -27,8 +24,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser() as unknown as RequestHandler);
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
 app.use("/jobroles", jobRolesRouter);
 
 app.listen(process.env.PORT || 5000, () => {

@@ -4,31 +4,6 @@ import { SortOrder } from "mongoose";
 
 const router = Router();
 
-// GET /jobroles - fetch all job roles (with optional search, sort, and pagination)
-// router.get('/', async (req: Request, res: Response) => {
-//   try {
-//     const { search, department, sort, page = '1', limit = '10' } = req.query;
-//     let filter: any = {};
-//     if (search) {
-//       filter.jobTitle = { $regex: search, $options: 'i' };
-//     }
-//     if (department) {
-//       filter.department = department;
-//     }
-//     let sortOption = { createdAt: -1 };
-//     if (sort === 'oldest') sortOption = { createdAt: 1 };
-//     const pageNum = parseInt(page as string, 10) || 1;
-//     const limitNum = parseInt(limit as string, 10) || 10;
-//     const skip = (pageNum - 1) * limitNum;
-//     const [items, total] = await Promise.all([
-//       JobRole.find(filter).sort(sortOption).skip(skip).limit(limitNum),
-//       JobRole.countDocuments(filter)
-//     ]);
-//     res.json({ items, total });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Failed to fetch job roles' });
-//   }
-// });
 router.get("/", async (req: Request, res: Response) => {
   try {
     const { search, department, sort, page = "1", limit = "10" } = req.query;
@@ -59,7 +34,6 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// POST /jobroles - create new job role
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { jobTitle, department, level, description } = req.body;
@@ -71,7 +45,6 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-// PUT /jobroles/:id - update job role
 router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -88,7 +61,6 @@ router.put("/:id", async (req: Request, res: Response) => {
   }
 });
 
-// DELETE /jobroles/:id - delete job role
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
