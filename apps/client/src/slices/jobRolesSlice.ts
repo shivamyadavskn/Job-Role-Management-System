@@ -1,7 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const API_URL ='http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL;
+console.log("API_URL:", API_URL);
 
 export interface JobRole {
   _id?: string;
@@ -20,7 +21,7 @@ interface JobRolesState {
   filters: {
     search: string;
     department: string;
-    sort: 'newest' | 'oldest';
+    sort: "newest" | "oldest";
     page: number;
     limit: number;
   };
@@ -33,9 +34,9 @@ const initialState: JobRolesState = {
   error: null,
   selected: null,
   filters: {
-    search: '',
-    department: '',
-    sort: 'newest',
+    search: "",
+    department: "",
+    sort: "newest",
     page: 1,
     limit: 10,
   },
@@ -43,37 +44,43 @@ const initialState: JobRolesState = {
 };
 
 export const fetchJobRoles = createAsyncThunk(
-  'jobRoles/fetchAll',
+  "jobRoles/fetchAll",
   async (_, { getState }) => {
     const state = getState() as { jobRoles: JobRolesState };
     const { search, department, sort, page, limit } = state.jobRoles.filters;
     const params: any = { page, limit };
     if (search) params.search = search;
     if (department) params.department = department;
-    if (sort) params.sort = sort === 'oldest' ? 'oldest' : undefined;
+    if (sort) params.sort = sort === "oldest" ? "oldest" : undefined;
     const res = await axios.get(`${API_URL}/jobroles`, { params });
     return res.data;
   }
 );
 
 export const createJobRole = createAsyncThunk(
-  'jobRoles/create',
-  async (data: Omit<JobRole, '_id' | 'createdAt'>) => {
+  "jobRoles/create",
+  async (data: Omit<JobRole, "_id" | "createdAt">) => {
     const res = await axios.post(`${API_URL}/jobroles`, data);
     return res.data;
   }
 );
 
 export const updateJobRole = createAsyncThunk(
-  'jobRoles/update',
-  async ({ id, data }: { id: string; data: Omit<JobRole, '_id' | 'createdAt'> }) => {
+  "jobRoles/update",
+  async ({
+    id,
+    data,
+  }: {
+    id: string;
+    data: Omit<JobRole, "_id" | "createdAt">;
+  }) => {
     const res = await axios.put(`${API_URL}/jobroles/${id}`, data);
     return res.data;
   }
 );
 
 export const deleteJobRole = createAsyncThunk(
-  'jobRoles/delete',
+  "jobRoles/delete",
   async (id: string) => {
     await axios.delete(`${API_URL}/jobroles/${id}`);
     return id;
@@ -81,10 +88,13 @@ export const deleteJobRole = createAsyncThunk(
 );
 
 const jobRolesSlice = createSlice({
-  name: 'jobRoles',
+  name: "jobRoles",
   initialState,
   reducers: {
-    setFilters(state, action: PayloadAction<Partial<JobRolesState['filters']>>) {
+    setFilters(
+      state,
+      action: PayloadAction<Partial<JobRolesState["filters"]>>
+    ) {
       state.filters = { ...state.filters, ...action.payload };
       if (action.payload.page === undefined) state.filters.page = 1; // reset page on filter change
     },
@@ -108,20 +118,20 @@ const jobRolesSlice = createSlice({
       })
       .addCase(fetchJobRoles.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch job roles';
+        state.error = action.error.message || "Failed to fetch job roles";
       })
       .addCase(createJobRole.fulfilled, (state, action) => {
         state.items.unshift(action.payload);
       })
       .addCase(updateJobRole.fulfilled, (state, action) => {
-        const idx = state.items.findIndex(j => j._id === action.payload._id);
+        const idx = state.items.findIndex((j) => j._id === action.payload._id);
         if (idx !== -1) state.items[idx] = action.payload;
       })
       .addCase(deleteJobRole.fulfilled, (state, action) => {
-        state.items = state.items.filter(j => j._id !== action.payload);
+        state.items = state.items.filter((j) => j._id !== action.payload);
       });
   },
 });
 
 export const { setFilters, setSelected, setPage } = jobRolesSlice.actions;
-export default jobRolesSlice.reducer; 
+export default jobRolesSlice.reducer;
